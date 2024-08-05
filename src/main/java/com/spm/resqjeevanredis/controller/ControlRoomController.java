@@ -22,8 +22,8 @@ public class ControlRoomController {
         this.controlRoomService = controlRoomService;
     }
 
-    @PostMapping("/testing")
-    public ResponseEntity<HashMap<String,Long>> testApi(@RequestBody RequesterDto requesterDto){
+    @PostMapping("/getAllocation-Recommendation")
+    public ResponseEntity<HashMap<String,Long>> getAllocationRecommendation(@RequestBody RequesterDto requesterDto){
         return ResponseEntity.ok(controlRoomService.distributeRequestedResources(requesterDto));
     }
 }
