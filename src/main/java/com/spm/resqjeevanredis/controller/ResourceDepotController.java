@@ -31,4 +31,6 @@ public class ResourceDepotController {
         logger.info("Fetching all resources");
         return resourceInfoService.getAllResources(principal);
     }
+
+    public
 }

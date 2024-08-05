@@ -19,13 +19,13 @@ import java.security.Principal;
 @Controller
 public class LocationFetchController {
     private final Logger logger = LoggerFactory.getLogger(LocationFetchController.class);
-    private final ChannelTopic channelTopic;
+    private final ChannelTopic locationChannelTopic;
     private final RedisTemplate redisTemplate;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final Receiver receiver;
 
-    public LocationFetchController(SimpMessagingTemplate simpMessagingTemplate, ChannelTopic channelTopic, RedisTemplate redisTemplate, SimpMessagingTemplate simpMessagingTemplate1, Receiver receiver) {
-        this.channelTopic = channelTopic;
+    public LocationFetchController(SimpMessagingTemplate simpMessagingTemplate, ChannelTopic locationChannelTopic, RedisTemplate redisTemplate, SimpMessagingTemplate simpMessagingTemplate1, Receiver receiver) {
+        this.locationChannelTopic = locationChannelTopic;
         this.redisTemplate = redisTemplate;
         this.simpMessagingTemplate = simpMessagingTemplate1;
         this.receiver = receiver;
@@ -47,14 +47,13 @@ public class LocationFetchController {
         }
         logger.info(locationDto.toString());
         try {
-            redisTemplate.convertAndSend(channelTopic.getTopic(), new LocationToBeSentToControlRoomDto(
+            redisTemplate.convertAndSend(locationChannelTopic.getTopic(), new LocationToBeSentToControlRoomDto(
                     principal.getName(),
                     locationDto.getRecipientId(),
                     locationDto.getLat(),
                     locationDto.getLng()
             ));
             LocationToBeSentToControlRoomDto location = receiver.locationToBeSentToControlRoomDto();
-            simpMessagingTemplate.convertAndSendToUser(location.getRecipientId(), "/queue/messages", location);
             return locationDto;
         } catch (Exception e) {
             e.printStackTrace();

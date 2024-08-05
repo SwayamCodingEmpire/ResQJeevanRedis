@@ -1,8 +1,12 @@
 package com.spm.resqjeevanredis.controller;
 
+import com.spm.resqjeevanredis.dto.FetchRequest;
 import com.spm.resqjeevanredis.dto.RequesterDto;
-import com.spm.resqjeevanredis.dto.TestingDto;
 import com.spm.resqjeevanredis.service.ControlRoomServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,20 +14,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/control-room")
 public class ControlRoomController {
+    private final Logger logger = LoggerFactory.getLogger(ControlRoomController.class);
     private final ControlRoomServiceImpl controlRoomService;
+    private final RedisTemplate redisTemplate;
+    private final ChannelTopic requestToDepotChannelTopic;
+    private final Receiver receiver;
 
-    public ControlRoomController(ControlRoomServiceImpl controlRoomService) {
+    public ControlRoomController(ControlRoomServiceImpl controlRoomService, RedisTemplate redisTemplate, ChannelTopic requestToDepotChannelTopic, Receiver receiver) {
         this.controlRoomService = controlRoomService;
+        this.redisTemplate = redisTemplate;
+        this.requestToDepotChannelTopic = requestToDepotChannelTopic;
+        this.receiver = receiver;
     }
 
     @PostMapping("/getAllocation-Recommendation")
     public ResponseEntity<HashMap<String,Long>> getAllocationRecommendation(@RequestBody RequesterDto requesterDto){
         return ResponseEntity.ok(controlRoomService.distributeRequestedResources(requesterDto));
+    }
+
+    public ResponseEntity<String> requestFetchAndSendToDepot(FetchRequest allocations){
+        redisTemplate.convertAndSend(requestToDepotChannelTopic.getTopic(),allocations);
+        return ResponseEntity.ok("Request Sent Successfully");
     }
 }

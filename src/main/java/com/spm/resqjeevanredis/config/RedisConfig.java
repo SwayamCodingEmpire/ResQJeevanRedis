@@ -13,10 +13,12 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 @Configuration
 @EnableRedisRepositories
 public class RedisConfig {
+
 
     @Bean
     public JedisConnectionFactory connectionFactory(){
@@ -42,9 +44,14 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic channelTopic(){
+    public ChannelTopic locationChannelTopic(){
         return new ChannelTopic("pubsub:location-channel");
     }
+    @Bean
+    public ChannelTopic requestToDepotChannelTopic(){
+        return new ChannelTopic("pubsub:depot-channel");
+    }
+
 
     @Bean
     public MessageListenerAdapter messageListenerAdapter(){
@@ -55,7 +62,8 @@ public class RedisConfig {
     public RedisMessageListenerContainer redisMessageListenerContainer(){
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory());
-        container.addMessageListener(messageListenerAdapter(),channelTopic());
+        container.addMessageListener(messageListenerAdapter(),locationChannelTopic());
+        container.addMessageListener(messageListenerAdapter(),requestToDepotChannelTopic());
         return container;
     }
 }
