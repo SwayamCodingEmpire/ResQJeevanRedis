@@ -12,6 +12,8 @@ import com.spm.resqjeevanredis.entity.ResourceInfo;
 import com.spm.resqjeevanredis.helper.ResourceType;
 import com.spm.resqjeevanredis.repository.ResourceDepotRepo;
 import com.spm.resqjeevanredis.repository.ResourceInfoRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ public class ControlRoomServiceImpl implements ControlRoomService {
     private final ResourceDepotRepo resourceDepotRepo;
     private final ResourceInfoRepo resourceInfoRepo;
     private final GeoApiContext geoApiContext;
+    private final Logger logger = LoggerFactory.getLogger(ControlRoomServiceImpl.class);
 
     public ControlRoomServiceImpl(ResourceDepotRepo resourceDepotRepo, ResourceInfoRepo resourceInfoRepo, GeoApiContext geoApiContext) {
         this.resourceDepotRepo = resourceDepotRepo;
@@ -123,15 +126,17 @@ public class ControlRoomServiceImpl implements ControlRoomService {
 //    @Override
     private HashMap<Boolean,List<ResourceDepot>> getResourceDepotsForRequest(RequesterDto requesterDto) {
         Set<ResourceInfo> resourceInfos = resourceInfoRepo.findAllByResourceName(requesterDto.getResourceName());
+        logger.info(resourceInfos.toString());
         double[][] origins = new double[resourceInfos.size()][2];
-        List<ResourceDepot> resourceDepots = null;
+        List<ResourceDepot> resourceDepots = new ArrayList<>();
         List<ResourceDepot> resourceDepotList = new ArrayList<>();
         HashMap<Boolean,List<ResourceDepot>> result = new HashMap<>();
         int i=0;
         AtomicLong currAmount = new AtomicLong();
         int j;
         for (ResourceInfo resourceInfo : resourceInfos) {
-            ResourceDepot resourceDepot = resourceDepotRepo.findById(resourceInfo.getResourceId()).orElseThrow(()->new UsernameNotFoundException("Resource Depot not found"));
+            ResourceDepot resourceDepot = resourceDepotRepo.findById(resourceInfo.getResourceDepotId()).orElseThrow(()->new UsernameNotFoundException("Resource Depot not found"));
+            logger.info(resourceDepot.toString());
             origins[i][0] = resourceDepot.getLat();
             origins[i][1] = resourceDepot.getLng();
             resourceDepots.add(resourceDepot);

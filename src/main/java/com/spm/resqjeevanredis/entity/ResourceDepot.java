@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,8 +30,8 @@ public class ResourceDepot implements UserDetails, Serializable {
     private String role;
     private Status status;
     private Double timeToReach;
-    @Reference
-    private Hashtable<String,ResourceInfo> resourceInfos;
+    @Indexed
+    private HashMap<String,ResourceInfo> resourceInfos;
     private boolean isAccountNonExpired=true;
     private boolean isAccountNonLocked=true;
     private boolean isCredentialsNonExpired=true;

@@ -39,7 +39,7 @@ public class ResourceInfoServiceImpl implements ResourceInfoService {
             resourceInfoDto.setResourceDepotId(resourceDepot.getUsername());
             logger.info(resourceInfoDto.toString());
             if(resourceDepot.getResourceInfos()==null){
-                Hashtable<String,ResourceInfo> resourceInfos = new Hashtable<>();
+                HashMap<String,ResourceInfo> resourceInfos = new HashMap<>();
                 resourceInfos.put(resourceInfoDto.getResourceName(),mapperService.convertToResourceInfo(resourceInfoDto));
                 resourceDepot.setResourceInfos(resourceInfos);
             }
@@ -89,7 +89,7 @@ public class ResourceInfoServiceImpl implements ResourceInfoService {
         {
             ResourceDepot resourceDepot = (ResourceDepot) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             ResourceInfo resourceInfo = resourceInfoRepo.findById(resourceId).orElseThrow(() -> new ResouceNotFoundException("Resource Not Found with id : " + resourceId));
-            if (resourceDepot.getResourceInfos().contains(resourceInfo)) {
+            if (resourceDepot.getResourceInfos().containsKey(resourceInfo)) {
                 return mapperService.convertToResourceInfoDto(resourceInfo);
             } else {
                 throw new AccessDeniedException("You are not authorized to access this functionality of this resource");
