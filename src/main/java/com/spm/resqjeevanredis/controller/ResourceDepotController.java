@@ -3,6 +3,7 @@ package com.spm.resqjeevanredis.controller;
 import com.spm.resqjeevanredis.dto.ResourceInfoDto;
 import com.spm.resqjeevanredis.dto.SendRequestToDepotDto;
 import com.spm.resqjeevanredis.service.ResourceInfoServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/resource-depot")
+@Tag(name = "ResourceDepotController", description = "APIs for ResourceDepots")
 public class ResourceDepotController {
     private final Logger logger = LoggerFactory.getLogger(ResourceDepotController.class);
     private final ResourceInfoServiceImpl resourceInfoService;
@@ -34,7 +36,7 @@ public class ResourceDepotController {
         return ResponseEntity.ok(resourceInfoService.getAllResources(principal));
     }
 
-    @PostMapping("/approve-request")
+    @PutMapping ("/approve-request")
     public ResponseEntity<Boolean> approveRequest(@RequestBody SendRequestToDepotDto sendRequestToDepotDto){
         logger.info(sendRequestToDepotDto.toString());
         return ResponseEntity.ok(resourceInfoService.sendResources(sendRequestToDepotDto));

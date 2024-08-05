@@ -5,6 +5,7 @@ import com.spm.resqjeevanredis.dto.ResourceDepotDto;
 import com.spm.resqjeevanredis.helper.AppConstants;
 import com.spm.resqjeevanredis.service.AdminInfoServiceImpl;
 import com.spm.resqjeevanredis.service.ResourceDepotServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/super-admin")
+@Tag(name = "SuperAdminController", description = "APIs for super admin")
 public class SuperAdminController {
     private final Logger logger = LoggerFactory.getLogger(SuperAdminController.class);
     private final AdminInfoServiceImpl adminInfoService;

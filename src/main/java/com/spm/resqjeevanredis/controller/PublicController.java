@@ -7,6 +7,7 @@ import com.spm.resqjeevanredis.helper.AppConstants;
 import com.spm.resqjeevanredis.service.AdminInfoServiceImpl;
 import com.spm.resqjeevanredis.service.AuthenticationServiceImpl;
 import com.spm.resqjeevanredis.service.JwtServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/public")
+@Tag(name = "PublicController", description = "APIs open to all")
 public class PublicController {
     private final AdminInfoServiceImpl adminInfoService;
     private final AuthenticationServiceImpl authenticationService;

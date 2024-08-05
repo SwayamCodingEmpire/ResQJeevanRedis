@@ -3,6 +3,7 @@ package com.spm.resqjeevanredis.controller;
 import com.spm.resqjeevanredis.dto.PersonnelInfoData;
 import com.spm.resqjeevanredis.dto.PersonnelInfoDto;
 import com.spm.resqjeevanredis.service.RegistrarServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
@@ -14,6 +15,7 @@ import java.io.InputStream;
 
 @RestController
 @RequestMapping("/registrar")
+@Tag(name = "RegistrarController", description = "APIs for registrar to register other entities")
 public class RegistrarController {
     private final Logger logger = LoggerFactory.getLogger(RegistrarController.class);
     private final RegistrarServiceImpl registrarService;

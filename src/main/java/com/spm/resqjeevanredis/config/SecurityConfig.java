@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.List;
 
@@ -21,6 +22,15 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
+    private static final String[] PUBLIC_URLS = {
+            "/public/**",
+            "/server1/**",
+            "/v3/api-docs",
+            "/v2/api-docs",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/webjars/**"
+    };
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, AuthenticationProvider authenticationProvider) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -31,8 +41,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.authorizeHttpRequests(authorize->{
-            authorize.requestMatchers("/public/**").permitAll();
-            authorize.requestMatchers("/server1/**").permitAll();
+            authorize.requestMatchers(PUBLIC_URLS).permitAll();
             authorize.requestMatchers("/super-admin/**").hasRole("SUPER_ADMIN");
             authorize.requestMatchers("/control-room/**").hasAnyRole("CONTROL_ROOM","SUPER_ADMIN");
             authorize.requestMatchers("/resource-depot/**").hasAnyRole("RESOURCE_DEPOT","CONTROL_ROOM","SUPER_ADMIN");

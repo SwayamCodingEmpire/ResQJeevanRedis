@@ -3,6 +3,7 @@ package com.spm.resqjeevanredis.controller;
 import com.spm.resqjeevanredis.dto.LocationDto;
 import com.spm.resqjeevanredis.dto.LocationToBeSentToControlRoomDto;
 import com.spm.resqjeevanredis.exceptions.WebSocketRelatedException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import java.security.Principal;
 
 @Controller
+@Tag(name = "LocationFetchController", description = "APIs for Location Fetching using STOMP Web Socket")
 public class LocationFetchController {
     private final Logger logger = LoggerFactory.getLogger(LocationFetchController.class);
     private final ChannelTopic locationChannelTopic;
