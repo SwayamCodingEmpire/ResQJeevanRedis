@@ -22,7 +22,7 @@ public class ResourceInfo implements Serializable
     @Indexed
     private String resourceName;
     private ResourceType resourceType;
-    private int unitsAvailable;
+    private long unitsAvailable;
     @Indexed
     private String resourceDepotId;
 }

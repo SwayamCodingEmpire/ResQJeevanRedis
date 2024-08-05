@@ -1,6 +1,7 @@
 package com.spm.resqjeevanredis.service;
 
 import com.spm.resqjeevanredis.dto.ResourceInfoDto;
+import com.spm.resqjeevanredis.dto.SendRequestToDepotDto;
 
 import java.security.Principal;
 import java.util.List;
@@ -12,4 +13,6 @@ public interface ResourceInfoService {
     ResourceInfoDto getResourceById(String resourceId);
     ResourceInfoDto getResourceByName(String resourceName);
     Set<ResourceInfoDto> getAllResources(Principal principal);
+
+    Boolean sendResources(SendRequestToDepotDto sendRequestToDepotDto);
 }

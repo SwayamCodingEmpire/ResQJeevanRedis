@@ -1,9 +1,11 @@
 package com.spm.resqjeevanredis.controller;
 
 import com.spm.resqjeevanredis.dto.ResourceInfoDto;
+import com.spm.resqjeevanredis.dto.SendRequestToDepotDto;
 import com.spm.resqjeevanredis.service.ResourceInfoServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -27,10 +29,14 @@ public class ResourceDepotController {
     }
 
     @GetMapping("/get-all-resources")
-    public Set<ResourceInfoDto> getAllResources(Principal principal) {
+    public ResponseEntity<Set<ResourceInfoDto>> getAllResources(Principal principal) {
         logger.info("Fetching all resources");
-        return resourceInfoService.getAllResources(principal);
+        return ResponseEntity.ok(resourceInfoService.getAllResources(principal));
     }
 
-    public
+    @PostMapping("/approve-request")
+    public ResponseEntity<Boolean> approveRequest(@RequestBody SendRequestToDepotDto sendRequestToDepotDto){
+        logger.info(sendRequestToDepotDto.toString());
+        return ResponseEntity.ok(resourceInfoService.sendResources(sendRequestToDepotDto));
+    }
 }

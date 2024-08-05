@@ -1,6 +1,7 @@
 package com.spm.resqjeevanredis.service;
 
 import com.spm.resqjeevanredis.dto.ResourceInfoDto;
+import com.spm.resqjeevanredis.dto.SendRequestToDepotDto;
 import com.spm.resqjeevanredis.entity.ResourceDepot;
 import com.spm.resqjeevanredis.entity.ResourceInfo;
 import com.spm.resqjeevanredis.exceptions.ResouceNotFoundException;
@@ -142,6 +143,19 @@ public class ResourceInfoServiceImpl implements ResourceInfoService {
 
         }catch (ClassCastException exception){
             throw new AccessDeniedException("You are not authorized to access this functionality of this resource");
+        }
+    }
+
+    @Override
+    public Boolean sendResources(SendRequestToDepotDto sendRequestToDepotDto) {
+        ResourceInfoDto resourceInfoDto = getResourceByName(sendRequestToDepotDto.getResourceName());
+        resourceInfoDto.setUnitsAvailable(resourceInfoDto.getUnitsAvailable()-sendRequestToDepotDto.getAmount());
+        try
+        {
+            resourceInfoRepo.save(mapperService.convertToResourceInfo(resourceInfoDto));
+            return true;
+        }catch (Exception e){
+            return false;
         }
     }
 }

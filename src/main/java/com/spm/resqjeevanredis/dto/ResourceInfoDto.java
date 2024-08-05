@@ -11,6 +11,6 @@ public class ResourceInfoDto {
     private String resourceId;
     private String resourceName;
     private ResourceType resourceType;
-    private int unitsAvailable;
+    private long unitsAvailable;
     private String resourceDepotId;
 }
