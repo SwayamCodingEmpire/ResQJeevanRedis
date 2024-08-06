@@ -3,6 +3,7 @@ package com.spm.resqjeevanredis.controller;
 import com.spm.resqjeevanredis.dto.LocationDto;
 import com.spm.resqjeevanredis.dto.LocationToBeSentToControlRoomDto;
 import com.spm.resqjeevanredis.exceptions.WebSocketRelatedException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ public class LocationFetchController {
     }
 
     @MessageMapping("/location")
+    @Operation(summary = "Location Fetcher", description = "After connecting to websocket, send location data")
     public LocationDto processMessage(@Payload LocationDto locationDto, Principal principal) {
         logger.info("Location received: {}", locationDto.toString());
         if (principal instanceof Authentication) {

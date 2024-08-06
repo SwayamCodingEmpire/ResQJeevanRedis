@@ -14,6 +14,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import java.util.List;
 
@@ -27,9 +28,11 @@ public class SecurityConfig {
             "/server1/**",
             "/v3/api-docs",
             "/v2/api-docs",
+            "/v3/api-docs/**",
             "/swagger-resources/**",
             "/swagger-ui/**",
-            "/webjars/**"
+            "/webjars/**",
+            "/swagger-ui.html"
     };
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, AuthenticationProvider authenticationProvider) {
@@ -59,7 +62,7 @@ public class SecurityConfig {
     @Bean
     public CorsFilter corsFilter(){
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://127.0.0.1:5500","http://127.0.0.1:5501"));
+        configuration.setAllowedOrigins(List.of("http://127.0.0.1:5500","http://127.0.0.1:5501","http://127.0.0.1:8080"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
@@ -67,4 +70,11 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**",configuration);
         return new CorsFilter(source);
     }
+
+//    @Bean
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/swagger-ui/**")
+//                .addResourceLocations("classpath:/META-INF/resources/webjars/springdoc-openapi-ui/")
+//                .resourceChain(false);
+//    }
 }

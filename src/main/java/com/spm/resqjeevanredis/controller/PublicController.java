@@ -7,6 +7,7 @@ import com.spm.resqjeevanredis.helper.AppConstants;
 import com.spm.resqjeevanredis.service.AdminInfoServiceImpl;
 import com.spm.resqjeevanredis.service.AuthenticationServiceImpl;
 import com.spm.resqjeevanredis.service.JwtServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ public class PublicController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Login", description = "Login for all users")
     public ResponseEntity<LoginResponse> loginAdmin(@RequestBody Login login){
         UserDetails userDetails = authenticationService.authenticate(login);
         logger.info(userDetails.toString());
