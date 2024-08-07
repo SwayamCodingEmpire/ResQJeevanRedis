@@ -45,7 +45,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.authorizeHttpRequests(authorize->{
             authorize.requestMatchers(PUBLIC_URLS).permitAll();
-            authorize.requestMatchers("/super-admin/**").hasRole("SUPER_ADMIN");
+            authorize.requestMatchers("/super-admin/**").permitAll();
             authorize.requestMatchers("/control-room/**").hasAnyRole("CONTROL_ROOM","SUPER_ADMIN");
             authorize.requestMatchers("/resource-depot/**").hasAnyRole("RESOURCE_DEPOT","CONTROL_ROOM","SUPER_ADMIN");
             authorize.requestMatchers("/leader/**").hasAnyRole("LEADER","CONTROL_ROOM","SUPER_ADMIN","REGISTRAR");

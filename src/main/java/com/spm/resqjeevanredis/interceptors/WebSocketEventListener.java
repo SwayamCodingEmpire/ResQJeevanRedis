@@ -42,6 +42,7 @@ public class WebSocketEventListener {
         {
             Principal principal = sessionConnectedEvent.getUser();
             logger.info("Connected to user " + principal.getName());
+
         }catch (Exception e){
             logger.error(e.getMessage());
             logger.info("Unable to get Principal Object");

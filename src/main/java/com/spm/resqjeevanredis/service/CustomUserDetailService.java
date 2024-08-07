@@ -5,6 +5,7 @@ import com.spm.resqjeevanredis.entity.PersonnelInfo;
 import com.spm.resqjeevanredis.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,6 +25,7 @@ public class CustomUserDetailService implements UserDetailsService {
     }
 
     @Override
+    @Cacheable(key = "#username", value = "UserDetails")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AdminInfo adminInfo = adminInfoRepo.findById(username).orElse(null);
         if(adminInfo==null){
