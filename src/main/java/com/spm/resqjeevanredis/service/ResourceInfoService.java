@@ -15,4 +15,10 @@ public interface ResourceInfoService {
     Set<ResourceInfoDto> getAllResources(Principal principal);
 
     Boolean sendResources(SendRequestToDepotDto sendRequestToDepotDto);
+
+    ResourceInfoDto deleteEntireResource(String resourceName);
+
+    Object addAResource(String resourceName,long addedUnits);
+
+    Boolean removeResource(String resourceName,long removedUnits);
 }

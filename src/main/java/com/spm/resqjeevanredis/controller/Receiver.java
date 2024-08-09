@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Receiver implements MessageListener {
     private LocationToBeSentToControlRoomDto locationToBeSentToControlRoomDto = null;
-    private FetchRequest allocations = null;
+    private FetchRequest allocations;
     private SimpMessagingTemplate simpMessagingTemplate;
     private final Logger logger = LoggerFactory.getLogger(Receiver.class);
 

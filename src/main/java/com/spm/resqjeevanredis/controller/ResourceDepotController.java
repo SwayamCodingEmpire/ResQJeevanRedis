@@ -45,4 +45,25 @@ public class ResourceDepotController {
         logger.info(sendRequestToDepotDto.toString());
         return ResponseEntity.ok(resourceInfoService.sendResources(sendRequestToDepotDto));
     }
+
+    @DeleteMapping("/delete-entire-resource/{resourceName}")
+    @Operation(summary = "Delete Entire Resource", description = "Delete Entire Resource")
+    public ResponseEntity<ResourceInfoDto> deleteEntireResource(@PathVariable String resourceName){
+        logger.info("Deleting entire resource");
+        return ResponseEntity.ok(resourceInfoService.deleteEntireResource(resourceName));
+    }
+
+    @PutMapping("/addAResource/{resourceName}/{unitsAdded}")
+    @Operation(summary = "Add Resource units", description = "Add Resource units")
+    public ResponseEntity<ResourceInfoDto> addAResource(@PathVariable String resourceName,@PathVariable long unitsAdded){
+        logger.info("Adding a resource");
+        return ResponseEntity.ok(resourceInfoService.addAResource(resourceName,unitsAdded));
+    }
+
+    @PutMapping("/remove-resource/{resourceName}/{unitsRemoved}")
+    @Operation(summary = "Remove Resource units", description = "Remove units of a Resource")
+    public ResponseEntity<Boolean> removeResource(@PathVariable String resourceName,@PathVariable long unitsRemoved){
+        logger.info("Removing a resource");
+        return ResponseEntity.ok(resourceInfoService.removeResource(resourceName,unitsRemoved));
+    }
 }

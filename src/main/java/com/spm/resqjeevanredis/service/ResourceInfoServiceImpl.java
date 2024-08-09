@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -159,5 +160,54 @@ public class ResourceInfoServiceImpl implements ResourceInfoService {
         }catch (Exception e){
             return false;
         }
+    }
+
+    @Override
+    public ResourceInfoDto deleteEntireResource(String resourceName) {
+        try
+        {
+            ResourceDepot resourceDepot = (ResourceDepot) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String resourceId = resourceDepot.getResourceInfos().remove(resourceName);
+            if(resourceId!=null){
+                resourceDepotRepo.save(resourceDepot);
+                resourceInfoRepo.deleteById(resourceId);
+                return mapperService.convertToResourceInfoDto(resourceInfoRepo.deleteByResourceId(resourceId));
+            }
+            else{
+                throw new ResouceNotFoundException("No such Resource Exists in this Resource Depot");
+            }
+        }catch (ClassCastException exception){
+            throw new AccessDeniedException("You are not authorized to access this functionality of this resource");
+        }
+    }
+
+    @Override
+    public ResourceInfoDto addAResource(String resourceName,long addedUnits) {
+            ResourceInfoDto resourceInfoDto = getResourceByName(resourceName);
+            resourceInfoDto.setUnitsAvailable(resourceInfoDto.getUnitsAvailable()+addedUnits);
+            return mapperService.convertToResourceInfoDto(resourceInfoRepo.save(mapperService.convertToResourceInfo(resourceInfoDto)));
+    }
+
+    @Override
+    public Boolean removeResource(String resourceName,long removedUnits){
+            ResourceInfoDto resourceInfoDto = getResourceByName(resourceName);
+            resourceInfoDto.setUnitsAvailable(resourceInfoDto.getUnitsAvailable()-removedUnits);
+            if(resourceInfoDto.getUnitsAvailable()<0){
+                throw new RuntimeException("Units available cannot be less than 0");
+            }
+            else if(resourceInfoDto.getUnitsAvailable()==0){
+                if(deleteEntireResource(resourceName)!=null){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+            else if(mapperService.convertToResourceInfoDto(resourceInfoRepo.save(mapperService.convertToResourceInfo(resourceInfoDto)))!=null){
+                return true;
+            }
+            else{
+                return false;
+            }
     }
 }
