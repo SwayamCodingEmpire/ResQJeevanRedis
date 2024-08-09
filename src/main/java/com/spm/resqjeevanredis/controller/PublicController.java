@@ -2,10 +2,10 @@ package com.spm.resqjeevanredis.controller;
 
 import com.spm.resqjeevanredis.dto.Login;
 import com.spm.resqjeevanredis.dto.LoginResponse;
-import com.spm.resqjeevanredis.entity.AdminInfo;
-import com.spm.resqjeevanredis.helper.AppConstants;
+import com.spm.resqjeevanredis.dto.TestingDto;
 import com.spm.resqjeevanredis.service.AdminInfoServiceImpl;
 import com.spm.resqjeevanredis.service.AuthenticationServiceImpl;
+import com.spm.resqjeevanredis.service.DistanceTimeCalculationServiceImpl;
 import com.spm.resqjeevanredis.service.JwtServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/public")
 @Tag(name = "PublicController", description = "APIs open to all")
@@ -22,12 +24,14 @@ public class PublicController {
     private final AdminInfoServiceImpl adminInfoService;
     private final AuthenticationServiceImpl authenticationService;
     private final JwtServiceImpl jwtService;
+    private final DistanceTimeCalculationServiceImpl distanceTimeCalculationService;
     private final Logger logger = LoggerFactory.getLogger(PublicController.class);
 
-    public PublicController(AdminInfoServiceImpl adminInfoService, AuthenticationServiceImpl authenticationService, JwtServiceImpl jwtService) {
+    public PublicController(AdminInfoServiceImpl adminInfoService, AuthenticationServiceImpl authenticationService, JwtServiceImpl jwtService, DistanceTimeCalculationServiceImpl distanceTimeCalculationService) {
         this.adminInfoService = adminInfoService;
         this.authenticationService = authenticationService;
         this.jwtService = jwtService;
+        this.distanceTimeCalculationService = distanceTimeCalculationService;
     }
 
     @PostMapping("/login")
@@ -46,5 +50,10 @@ public class PublicController {
         else{
             throw new IllegalStateException("user is Invalid");
         }
+    }
+
+    @PostMapping("/testing")
+    public ResponseEntity<List<Double>> testingMaps(@RequestBody TestingDto testingDto){
+        return ResponseEntity.ok(distanceTimeCalculationService.getTravelTimes(testingDto.getOrigins(), testingDto.getDestination()));
     }
 }

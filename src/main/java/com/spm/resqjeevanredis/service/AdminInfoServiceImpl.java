@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -41,17 +42,18 @@ public class AdminInfoServiceImpl implements AdminInfoService {
             }
     }
 
+    @Override
     @CachePut(value = "AdminInfo", key = "#result.username")
-    public AdminInfo makeControlRoomOnline(){
-         AdminInfo controlRoom = (AdminInfo) SecurityContextHolder.getContext().getAuthentication();
+    public AdminInfo makeControlRoomOnline(String username){
+         AdminInfo controlRoom = adminInfoRepo.findById(username).orElseThrow(()->new UsernameNotFoundException("Control Room with username : "+username+" does not exist"));
          controlRoom.setStatus(Status.ONLINE);
          return adminInfoRepo.save(controlRoom);
     }
 
     @Override
     @CacheEvict(value = "AdminInfo", key = "#result.username")
-    public AdminInfo makeControlRoomOffline() {
-        AdminInfo controlRoom = (AdminInfo) SecurityContextHolder.getContext().getAuthentication();
+    public AdminInfo makeControlRoomOffline(String username) {
+        AdminInfo controlRoom = adminInfoRepo.findById(username).orElseThrow(()->new UsernameNotFoundException("Control Room with username : "+username+" does not exist"));
         controlRoom.setStatus(Status.OFFLINE);
         return adminInfoRepo.save(controlRoom);
     }

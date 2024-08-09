@@ -9,6 +9,6 @@ public interface ResourceDepotService {
     ResourceDepotDto getResourceDepotById(String resourceDepotId);
     Boolean existsById(String resourceDepotId);
     Boolean deleteById(String resourceDepotId);
-    ResourceDepot makeResourceDepotOnline();
-    ResourceDepot makeResourceDepotOffline();
+    ResourceDepot makeResourceDepotOnline(String username);
+    ResourceDepot makeResourceDepotOffline(String username);
 }

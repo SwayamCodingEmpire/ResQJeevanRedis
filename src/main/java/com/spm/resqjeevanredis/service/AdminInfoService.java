@@ -5,6 +5,6 @@ import com.spm.resqjeevanredis.entity.AdminInfo;
 
 public interface AdminInfoService {
     AdminInfoDto saveAdmin(AdminInfoDto adminInfoDto, String role) throws Exception;
-    AdminInfo makeControlRoomOnline();
-    AdminInfo makeControlRoomOffline();
+    AdminInfo makeControlRoomOnline(String username);
+    AdminInfo makeControlRoomOffline(String username);
 }

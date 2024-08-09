@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
+
 public class ResourceDepotDao {
 //    private final RedisTemplate redisTemplate;
 //    private final String HASH_KEY = "ResourceDepot";

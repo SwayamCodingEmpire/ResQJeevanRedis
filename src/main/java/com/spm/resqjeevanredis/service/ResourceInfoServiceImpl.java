@@ -40,17 +40,19 @@ public class ResourceInfoServiceImpl implements ResourceInfoService {
             resourceInfoDto.setResourceDepotId(resourceDepot.getUsername());
             logger.info(resourceInfoDto.toString());
             if(resourceDepot.getResourceInfos()==null){
-                HashMap<String,ResourceInfo> resourceInfos = new HashMap<>();
-                resourceInfos.put(resourceInfoDto.getResourceName(),mapperService.convertToResourceInfo(resourceInfoDto));
+                HashMap<String,String> resourceInfos = new HashMap<>();
+                resourceInfos.put(resourceInfoDto.getResourceName(),resourceInfoDto.getResourceId());
                 resourceDepot.setResourceInfos(resourceInfos);
             }
             else {
-                if (resourceDepot.getResourceInfos().put(resourceInfoDto.getResourceName(),mapperService.convertToResourceInfo(resourceInfoDto))!=null){
+                if (resourceDepot.getResourceInfos().put(resourceInfoDto.getResourceName(),resourceInfoDto.getResourceId())!=null){
                     logger.error("Resource with name : " + resourceInfoDto.getResourceName() + " already exists in this Resource Depot");
                     throw new ResourceAlreadyExistsException("Resource with name : " + resourceInfoDto.getResourceName() + " already exists in this Resource Depot");
                 }
             }
+            logger.info("Resource Depot Going to save");
             resourceDepotRepo.save(resourceDepot);
+            logger.info("Resource Depot saved");
             return mapperService.convertToResourceInfoDto(resourceInfoRepo.save(mapperService.convertToResourceInfo(resourceInfoDto)));
         }catch (ClassCastException exception){
             throw new AccessDeniedException("You are not authorized to access this functionality of this resource");
@@ -68,7 +70,7 @@ public class ResourceInfoServiceImpl implements ResourceInfoService {
             });
             resourceInfos.forEach(resourceInfo -> {
                 resourceInfo.setResourceDepotId(resourceDepot.getUsername());
-                if(resourceDepot.getResourceInfos().put(resourceInfo.getResourceName(),resourceInfo)==null){
+                if(resourceDepot.getResourceInfos().put(resourceInfo.getResourceName(),resourceInfo.getResourceId())==null){
                     resourceInfoRepo.save(resourceInfo);
                     resourceDepotRepo.save(resourceDepot);
                 }

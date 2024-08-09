@@ -1,5 +1,8 @@
 package com.spm.resqjeevanredis.interceptors;
 
+import com.spm.resqjeevanredis.service.AdminInfoServiceImpl;
+import com.spm.resqjeevanredis.service.PersonnelServiceImpl;
+import com.spm.resqjeevanredis.service.ResourceDepotServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -15,6 +18,15 @@ import java.security.Principal;
 @Component
 public class WebSocketEventListener {
     private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
+    private final ResourceDepotServiceImpl resourceDepotService;
+    private final AdminInfoServiceImpl adminInfoService;
+    private final PersonnelServiceImpl personnelService;
+
+    public WebSocketEventListener(ResourceDepotServiceImpl resourceDepotService, AdminInfoServiceImpl adminInfoService, PersonnelServiceImpl personnelService) {
+        this.resourceDepotService = resourceDepotService;
+        this.adminInfoService = adminInfoService;
+        this.personnelService = personnelService;
+    }
 
 
     @EventListener
@@ -42,6 +54,7 @@ public class WebSocketEventListener {
         {
             Principal principal = sessionConnectedEvent.getUser();
             logger.info("Connected to user " + principal.getName());
+            adminInfoService.makeControlRoomOnline(principal.getName());
 
         }catch (Exception e){
             logger.error(e.getMessage());

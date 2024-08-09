@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
+
 public class PersonnelInfoDao {
 //    private final RedisTemplate redisTemplate;
 //    private static final String HASH_KEY = "PersonnelInfo";

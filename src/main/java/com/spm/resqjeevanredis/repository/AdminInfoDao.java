@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
+
 public class AdminInfoDao {
 //    private final RedisTemplate redisTemplate;
 //    public static final String HASH_KEY ="AdminInfo";

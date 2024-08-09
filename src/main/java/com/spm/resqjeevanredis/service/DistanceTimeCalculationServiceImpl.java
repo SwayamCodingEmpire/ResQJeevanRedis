@@ -6,6 +6,8 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixElement;
 import com.google.maps.model.DistanceMatrixRow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.util.List;
 @Service
 public class DistanceTimeCalculationServiceImpl implements DistanceTimeCalculationService {
     private final GeoApiContext geoApiContext;
+    private final Logger logger = LoggerFactory.getLogger(DistanceTimeCalculationServiceImpl.class);
 
     public DistanceTimeCalculationServiceImpl(GeoApiContext geoApiContext) {
         this.geoApiContext = geoApiContext;
@@ -22,12 +25,17 @@ public class DistanceTimeCalculationServiceImpl implements DistanceTimeCalculati
     @Override
     public List<Double> getTravelTimes(double[][] origins, double[] destination) {
         try{
+            logger.info("Origins : " + String.valueOf(origins[0][0]));
+            logger.info("Destination : " + String.valueOf(destination[0]));
             String[] originsString = convertCoordinates(origins);
             String destinationString = convertCoordinate(destination);
             DistanceMatrix result = DistanceMatrixApi.newRequest(geoApiContext)
                     .origins(originsString)
                     .destinations(destinationString)
                     .await();
+            logger.info("Result : " + result.toString());
+            logger.info("Status : " + result.rows[0].elements[0].status);
+            logger.info("Duration : " + result.rows[0].elements[0].duration);
             List<Double> travelTimes = new ArrayList<>();
             for(DistanceMatrixRow row : result.rows){
                 for(DistanceMatrixElement element : row.elements){
@@ -40,6 +48,7 @@ public class DistanceTimeCalculationServiceImpl implements DistanceTimeCalculati
                     }
                 }
             }
+            logger.info("Travel times: " + travelTimes);
             return travelTimes;
         } catch (IOException | ApiException | InterruptedException e){
             e.printStackTrace();

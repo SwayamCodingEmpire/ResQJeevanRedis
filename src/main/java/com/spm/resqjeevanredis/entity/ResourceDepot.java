@@ -31,7 +31,7 @@ public class ResourceDepot implements UserDetails, Serializable {
     private Status status;
     private Double timeToReach;
     @Indexed
-    private HashMap<String,ResourceInfo> resourceInfos;
+    private HashMap<String,String> resourceInfos;
     private boolean isAccountNonExpired=true;
     private boolean isAccountNonLocked=true;
     private boolean isCredentialsNonExpired=true;

@@ -6,11 +6,9 @@ import com.spm.resqjeevanredis.exceptions.ResouceNotFoundException;
 import com.spm.resqjeevanredis.exceptions.UsernameAlreadyExistsException;
 import com.spm.resqjeevanredis.helper.AppConstants;
 import com.spm.resqjeevanredis.helper.Status;
-import com.spm.resqjeevanredis.repository.ResourceDepotDao;
 import com.spm.resqjeevanredis.repository.ResourceDepotRepo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -61,16 +59,16 @@ public class ResourceDepotServiceImpl implements ResourceDepotService {
     }
 
     @Override
-    @CachePut(value = "ResourceDepot", key = "#result.username")
-    public ResourceDepot makeResourceDepotOnline(){
-        ResourceDepot resourceDepot = (ResourceDepot) SecurityContextHolder.getContext().getAuthentication();
+    @CachePut(value = "ResourceDepot", key = "#username")
+    public ResourceDepot makeResourceDepotOnline(String username){
+        ResourceDepot resourceDepot = resourceDepotRepo.findById(username).orElseThrow(()->new ResouceNotFoundException("Resource Depot not found with username : "+username));
         resourceDepot.setStatus(Status.ONLINE);
         return resourceDepotRepo.save(resourceDepot);
     }
     @Override
-    @CacheEvict(value = "ResourceDepot", key = "#result.username")
-    public ResourceDepot makeResourceDepotOffline(){
-        ResourceDepot resourceDepot = (ResourceDepot) SecurityContextHolder.getContext().getAuthentication();
+    @CacheEvict(value = "ResourceDepot", key = "#username")
+    public ResourceDepot makeResourceDepotOffline(String username){
+        ResourceDepot resourceDepot = resourceDepotRepo.findById(username).orElseThrow(()->new ResouceNotFoundException("Resource Depot not found with username : "+username));
         resourceDepot.setStatus(Status.OFFLINE);
         return resourceDepotRepo.save(resourceDepot);
     }

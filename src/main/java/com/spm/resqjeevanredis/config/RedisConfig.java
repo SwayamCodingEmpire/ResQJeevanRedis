@@ -25,7 +25,12 @@ public class RedisConfig {
     private static final Logger logger = LoggerFactory.getLogger(RedisConfig.class);
 
     @Bean
-    public RedisTemplate<String,Object> redisTemplate(RedisConnectionFactory jedisConnectionFactory){
+    public JedisConnectionFactory jedisConnectionFactory() {
+        return new JedisConnectionFactory();
+    }
+
+    @Bean
+    public RedisTemplate<String,Object> redisTemplate(JedisConnectionFactory jedisConnectionFactory){
         RedisTemplate<String,Object> template = new RedisTemplate<>();
         Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
         template.setConnectionFactory(jedisConnectionFactory);
@@ -55,7 +60,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory){
+    public RedisMessageListenerContainer redisMessageListenerContainer(JedisConnectionFactory connectionFactory){
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(messageListenerAdapter(),locationChannelTopic());

@@ -1,19 +1,53 @@
 package com.spm.resqjeevanredis.repository;
 
 import com.spm.resqjeevanredis.entity.ResourceInfo;
-import com.spm.resqjeevanredis.exceptions.ResourceAlreadyExistsException;
+import com.spm.resqjeevanredis.exceptions.ResouceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Repository
+@Component
 public class ResourceInfoDao {
+    private final ResourceInfoRepo resourceInfoRepo;
+    private final CacheManager cacheManager;
+    private final Logger logger = LoggerFactory.getLogger(ResourceInfoDao.class);
+
+    public ResourceInfoDao(ResourceInfoRepo resourceInfoRepo, CacheManager cacheManager) {
+        this.resourceInfoRepo = resourceInfoRepo;
+        this.cacheManager = cacheManager;
+    }
+
+    public Set<ResourceInfo> findAllByResourceName(String resourceName){
+        Set<ResourceInfo> resourceInfos = resourceInfoRepo.findAllByResourceName(resourceName);
+        Cache cache = cacheManager.getCache("ResourceInfos");
+        if(cache!=null){
+            resourceInfos.forEach(resourceInfo -> cache.put(resourceInfo.getResourceId(),resourceInfo));
+        }
+        return resourceInfos;
+    }
+
+    public Optional<ResourceInfo> findById(String resourceId){
+        Cache cache = cacheManager.getCache("ResourceInfos");
+        if(cache!=null){
+            logger.info("Fetching ResourceInfo from Cache with resourceId : {}",resourceId);
+            ResourceInfo resourceInfo = cache.get(resourceId,ResourceInfo.class);
+            if(resourceInfo!=null){
+                logger.info("ResourceInfo found in Cache with resourceId : {}",resourceId);
+                logger.info(resourceInfo.toString());
+                return Optional.of(resourceInfo);
+            }
+        }
+        logger.info("Fetching ResourceInfo from Database with resourceId : {}",resourceId);
+        Optional<ResourceInfo> resourceInfo = resourceInfoRepo.findById(resourceId);
+        return resourceInfo;
+    }
+
 //    private final RedisTemplate redisTemplate;
 //    private static final String HASH_KEY = "ResourceInfo";
 //    private static final String RESOURCE_NAME_PREFIX = "resourceinfo:resourceName:";

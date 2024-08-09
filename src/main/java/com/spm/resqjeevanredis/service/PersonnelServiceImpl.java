@@ -6,7 +6,10 @@ import com.spm.resqjeevanredis.repository.PersonnelInfoRepo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PersonnelServiceImpl implements PersonnelService {
     private final PersonnelInfoRepo personnelInfoRepo;;
 
@@ -15,17 +18,17 @@ public class PersonnelServiceImpl implements PersonnelService {
     }
 
     @Override
-    @CachePut(value = "PersonnelInfo", key = "#result.username")
-    public PersonnelInfo makePersonnelOnline(){
-         PersonnelInfo personnelInfo = (PersonnelInfo) SecurityContextHolder.getContext().getAuthentication();
+    @CachePut(value = "PersonnelInfo", key = "#username")
+    public PersonnelInfo makePersonnelOnline(String username){
+         PersonnelInfo personnelInfo = personnelInfoRepo.findById(username).orElseThrow(()->new UsernameNotFoundException("User not found with username: "+username));
          personnelInfo.setStatus(Status.ONLINE);
          return personnelInfoRepo.save(personnelInfo);
     }
 
     @Override
-    @CacheEvict(value = "PersonnelInfo", key = "#result.username")
-    public PersonnelInfo makePersonnelOffline() {
-        PersonnelInfo personnelInfo = (PersonnelInfo) SecurityContextHolder.getContext().getAuthentication();
+    @CacheEvict(value = "PersonnelInfo", key = "#username")
+    public PersonnelInfo makePersonnelOffline(String username) {
+        PersonnelInfo personnelInfo = personnelInfoRepo.findById(username).orElseThrow(()->new UsernameNotFoundException("User not found with username: "+username));
         personnelInfo.setStatus(Status.OFFLINE);
         return personnelInfoRepo.save(personnelInfo);
     }

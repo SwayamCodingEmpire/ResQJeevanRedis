@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+
 public class CustomUserDetailService implements UserDetailsService {
     private final AdminInfoRepo adminInfoRepo;
     private final PersonnelInfoRepo personnelInfoRepo;
@@ -27,6 +28,7 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     @Cacheable(key = "#username", value = "UserDetails")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        logger.info("Fetching User data from Database with username : {}",username);
         AdminInfo adminInfo = adminInfoRepo.findById(username).orElse(null);
         if(adminInfo==null){
             PersonnelInfo personnelInfo = personnelInfoRepo.findById(username).orElse(null);
